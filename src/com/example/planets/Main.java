@@ -1,97 +1,118 @@
 package com.example.planets;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import javax.swing.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import java.util.*;
 
 public class Main {
     private static Map<String, HeavenlyBody> solarSystem = new HashMap<>();
-    private static Set<HeavenlyBody> planets = new HashSet<>();
-
+    private static Set<Planet> planets = new HashSet<>();
+    private static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
-        HeavenlyBody temp = new HeavenlyBody("Mercury", 88);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
 
-        temp = new HeavenlyBody("Venus", 225);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-        temp = new HeavenlyBody("Earth", 365);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-        HeavenlyBody tempMoon = new HeavenlyBody("Moon", 27);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        temp = new HeavenlyBody("Mars", 687);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-        tempMoon = new HeavenlyBody("Deimos", 1.3);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        tempMoon = new HeavenlyBody("Phobos", 0.3);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        temp = new HeavenlyBody("Jupiter", 4332);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-        tempMoon = new HeavenlyBody("Io", 1.8);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        tempMoon = new HeavenlyBody("Europa", 3.5);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        tempMoon = new HeavenlyBody("Ganymede", 7.1);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        tempMoon = new HeavenlyBody("Callisto", 16.7);
-        solarSystem.put(tempMoon.getName(), tempMoon);
-        temp.addMoon(tempMoon);
-
-        temp = new HeavenlyBody("Neptune", 165);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-        temp = new HeavenlyBody("Pluto", 248);
-        solarSystem.put(temp.getName(), temp);
-        planets.add(temp);
-
-
-
-        System.out.println("Planets");
-        for(HeavenlyBody planet : planets){
-            System.out.println("\t" + planet.getName());
+        boolean flag = true;
+        while (flag) {
+            printTitle();
+            printInstructions();
+            int userChoice = scan.nextInt();
+            scan.nextLine();
+            switch (userChoice) {
+                case 0:
+                    printInstructions();
+                    break;
+                case 1:
+                    addPlanet();
+                    break;
+                case 2:
+                    printPlanets();
+                    break;
+                case 3:
+                    addMoon();
+                    break;
+                case 4:
+                    printMoons();
+                    break;
+                case 5:
+                    flag = false;
+                default:
+                    System.out.println("Wrong choice: 1 - 5");
+            }
         }
-
-        Set<HeavenlyBody> moons = new HashSet<>();
-        for(HeavenlyBody planet : planets){
-            moons.addAll(planet.getSatellites());
-        }
-
-        System.out.println("All Moons");
-        for(HeavenlyBody moon : moons){
-            System.out.println("\t" + moon.getName());
-        }
-
-        temp = new HeavenlyBody("Pluto", 842);
-        planets.add(temp);
-
-        for(HeavenlyBody planet: planets){
-            System.out.println(planet.getName() + " " + planet.getOrbitalPeriod());
-        }
-
 
     }
+
+    public static void printTitle() {
+        System.out.println("<<<<<<<<<<<<<<<<Welcome to the Planet App>>>>>>>>>>>>>>>>");
+    }
+
+    public static void printInstructions() {
+        System.out.println("0 -> Print Instructions");
+        System.out.println("1 -> Add Planet");
+        System.out.println("2 -> Print Planets");
+        System.out.println("3 -> Add Moon");
+        System.out.println("4 -> Print Moons");
+        System.out.println("5 -> Quit Application");
+    }
+
+    public static void addPlanet() {
+        System.out.println("Enter planet name: ");
+        String name = scan.nextLine();
+        System.out.println("Enter orbital Period: ");
+        int orbitalPeriod = scan.nextInt();
+        Planet planet = new Planet(name, orbitalPeriod);
+        solarSystem.put(planet.getName(), planet);
+    }
+
+    public static void printPlanets() {
+        for (String planet : solarSystem.keySet()) {
+            System.out.println(planet);
+        }
+    }
+
+    public static void addMoon() {
+        boolean check = true;
+        Planet planet;
+        System.out.println("Enter name of planet you would like to add a moon to: ");
+        String userPlanet = scan.nextLine();
+        for (String planets : solarSystem.keySet()) {
+            if (userPlanet.equals(planets)) {
+                planet = (Planet) solarSystem.get(planets);
+                System.out.println("Enter name of moon: ");
+                String name = scan.nextLine();
+                System.out.println("Enter orbital period");
+                int orbitalPeriod = scan.nextInt();
+                scan.nextLine();
+                planet.addMoon(name, orbitalPeriod);
+                check = false;
+            }
+        }
+
+        if(!check){
+            System.out.println("Moon successfully added");
+        }else{
+            System.out.println("Moon was not added");
+        }
+    }
+
+    public static void printMoons() {
+        boolean check = true;
+        System.out.println("Enter planet name to list moons");
+        String planet = scan.nextLine();
+        for (String planets : solarSystem.keySet()) {
+            if (planet.equalsIgnoreCase(planets)) {
+                Planet planet1 = (Planet) solarSystem.get(planet);
+                planet1.printMoons();
+                check = false;
+            }
+
+        }
+
+        if(check){
+            System.out.println("Planet could not be found. Please add it.");
+        }
+    }
 }
+
 
