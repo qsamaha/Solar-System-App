@@ -46,25 +46,5 @@ public class Planet extends HeavenlyBody {
             super(name, orbitalPeriod, "Moon");
         }
 
-        @Override
-        public String getName() {
-            return super.getName();
-        }
-
-        @Override
-        public double getOrbitalPeriod() {
-            return super.getOrbitalPeriod();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return super.equals(obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
     }
 }
